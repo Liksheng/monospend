@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MonoSpend 2000</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              y2k: {
+                green: '#39ff14',
+                pink: '#ff00ff',
+                cyan: '#00ffff',
+                yellow: '#ffff00',
+                black: '#050505', 
+                gray: '#1a1a1a',
+                silver: '#c0c0c0',
+              },
+            },
+            fontFamily: {
+              sans: ['"Share Tech Mono"', 'monospace'],
+              mono: ['"Share Tech Mono"', 'monospace'],
+              display: ['"Share Tech Mono"', 'monospace'],
+            },
+            animation: {
+              'blink': 'blink 1s step-end infinite',
+              'fast-blink': 'blink 0.2s step-end infinite',
+              'marquee': 'marquee 10s linear infinite',
+              'float': 'float 3s ease-in-out infinite',
+              'glitch': 'glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite',
+              'spin-slow': 'spin 4s linear infinite',
+              'scan': 'scan 2s linear infinite',
+              'scan-fast': 'scan 1s linear infinite',
+              'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+              'breathe': 'breathe 4s ease-in-out infinite',
+            },
+            keyframes: {
+              blink: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0' },
+              },
+              marquee: {
+                '0%': { transform: 'translateX(100%)' },
+                '100%': { transform: 'translateX(-100%)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' },
+              },
+              glitch: {
+                '0%': { transform: 'translate(0)' },
+                '20%': { transform: 'translate(-2px, 2px)' },
+                '40%': { transform: 'translate(-2px, -2px)' },
+                '60%': { transform: 'translate(2px, 2px)' },
+                '80%': { transform: 'translate(2px, -2px)' },
+                '100%': { transform: 'translate(0)' }
+              },
+              scan: {
+                '0%': { top: '-10%' },
+                '100%': { top: '110%' },
+              },
+              'pulse-glow': {
+                '0%, 100%': { boxShadow: '0 0 5px #39ff14' },
+                '50%': { boxShadow: '0 0 15px #39ff14' },
+              },
+              breathe: {
+                '0%, 100%': { filter: 'brightness(1)' },
+                '50%': { filter: 'brightness(1.1) contrast(1.05)' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+      
+      body {
+        background-color: #000;
+        color: #39ff14;
+        font-family: 'Share Tech Mono', monospace;
+        overflow-x: hidden;
+      }
+
+      /* Matrix Canvas needs to be visible */
+      #matrix-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* Behind everything */
+        opacity: 0.05; /* Very subtle */
+      }
+
+      /* CRT Scanline - subtle overlay */
+      .scanline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2));
+        background-size: 100% 4px;
+        z-index: 50;
+        pointer-events: none;
+        opacity: 0.3;
+      }
+      
+      /* Text Glow */
+      .text-glow {
+        text-shadow: 0 0 2px rgba(57, 255, 20, 0.5); 
+      }
+      
+      /* Custom Scrollbar - Cyberpunk Style */
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: #050505; border: 1px solid #1a1a1a; }
+      ::-webkit-scrollbar-thumb { 
+        background: #39ff14; 
+        border: 1px solid #000; 
+        box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+      }
+      ::-webkit-scrollbar-thumb:hover { background: #fff; }
+      ::-webkit-scrollbar-corner { background: #000; }
+
+      /* Selection */
+      ::selection {
+        background: #ff00ff;
+        color: #fff;
+        text-shadow: none;
+      }
+
+      .y2k-border {
+          border: 1px solid #39ff14;
+          box-shadow: 0 0 5px rgba(57, 255, 20, 0.2);
+      }
+      
+      .y2k-panel {
+          background: rgba(5, 5, 5, 0.85); 
+          border: 1px solid #39ff14;
+          backdrop-filter: blur(5px);
+          box-shadow: 0 0 15px rgba(57, 255, 20, 0.05), inset 0 0 20px rgba(0,0,0,0.5);
+          transition: box-shadow 0.3s ease, transform 0.3s ease;
+      }
+
+      .y2k-panel:hover {
+        box-shadow: 0 0 25px rgba(57, 255, 20, 0.1), inset 0 0 10px rgba(0,0,0,0.3);
+        transform: translateY(-1px);
+      }
+
+      .inner-shadow {
+          box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+      }
+
+      /* Utility to hide scrollbar but allow scroll */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.4.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0"
+  }
+}
+</script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <canvas id="matrix-bg"></canvas>
+    <div class="scanline"></div>
+    <div id="root" class="relative min-h-screen animate-breathe"></div>
+    <script>
+      const canvas = document.getElementById('matrix-bg');
+      const ctx = canvas.getContext('2d');
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      const chars = '01';
+      const drops = [];
+      const fontSize = 14;
+      const columns = width / fontSize;
+
+      for (let x = 0; x < columns; x++) {
+        drops[x] = 1;
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.fillStyle = '#003300'; 
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          const opacity = Math.random() > 0.95 ? 1 : 0.2;
+          ctx.fillStyle = `rgba(57, 255, 20, ${opacity})`;
+          
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      let interval = setInterval(draw, 50);
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
