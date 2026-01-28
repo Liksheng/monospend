@@ -1,0 +1,5 @@
+{
+  "name": "MonoSpend",
+  "description": "A minimalist, monochrome smart expense tracker powered by Gemini. Track spending with natural language and visualize data in a sleek interface.",
+  "requestFramePermissions": []
+}
