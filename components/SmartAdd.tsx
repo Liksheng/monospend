@@ -61,7 +61,7 @@ const SmartAdd: React.FC<SmartAddProps> = ({ onAddExpense, onAddWishlistItem, ex
                     // Trigger if > 3x average
                     if (newExpense.amount > avg * 3 && newExpense.amount > 50) {
                         setPendingExpense(newExpense);
-                        setAnomalyWarning(`ALERT: $${newExpense.amount} is significantly higher than your average ${newExpense.category} spend ($${avg.toFixed(0)}).`);
+                        setAnomalyWarning(`ALERT: RM${newExpense.amount} is significantly higher than your average ${newExpense.category} spend (RM${avg.toFixed(0)}).`);
                         playGlitchSound();
                         return; // Stop processing to show modal
                     }
@@ -177,7 +177,7 @@ const SmartAdd: React.FC<SmartAddProps> = ({ onAddExpense, onAddWishlistItem, ex
                     type="text"
                     value={input}
                     onChange={handleInputChange}
-                    placeholder="> Ex: 'Lunch $15' OR 'Wishlist Bike $200'"
+                    placeholder="> Ex: 'Lunch RM15' OR 'Wishlist Bike RM200'"
                     className="w-full h-full bg-black border-2 border-y2k-green pl-6 pr-4 text-lg md:text-xl font-bold text-white placeholder-y2k-green/30 focus:outline-none focus:bg-y2k-green/5 focus:shadow-[0_0_15px_rgba(57,255,20,0.2)] transition-all font-mono"
                     disabled={isProcessing}
                     autoFocus

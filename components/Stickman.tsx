@@ -146,7 +146,7 @@ const BitBuddy: React.FC<BitBuddyProps> = ({ expenses, budgets, insight }) => {
                       <rect x="55" y="35" width="20" height="12" fill={black} className="animate-float" />
                       <line x1="45" y1="40" x2="55" y2="40" stroke={black} strokeWidth="2" className="animate-float" />
                       <path d="M35 65 Q50 75 65 65" stroke={black} strokeWidth="3" fill="none" className="animate-float" />
-                      <text x="85" y="30" fontFamily="monospace" fontSize="20" fill="#ffff00" className="animate-bounce">$</text>
+                      <text x="85" y="30" fontFamily="monospace" fontSize="20" fill="#ffff00" className="animate-bounce">RM</text>
                   </svg>
                );
           default: // Happy/Idle

@@ -58,7 +58,7 @@ const PredictiveModelling: React.FC<PredictiveModellingProps> = ({ expenses, cur
         
         <div className="flex justify-between items-end">
             <span className="text-zinc-400">Daily Burn:</span>
-            <span className="text-white">${prediction.dailyBurn.toFixed(2)}</span>
+            <span className="text-white">RM{prediction.dailyBurn.toFixed(2)}</span>
         </div>
 
         <div className="mt-2 border-t border-dashed border-white/10 pt-2">

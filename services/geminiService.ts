@@ -23,7 +23,7 @@ export const parseNaturalLanguageExpense = async (input: string, dateContext?: s
       CLASSIFY EACH ITEM: EXPENSE or WISHLIST.
       
       EXAMPLES:
-      "Taxi $45" -> [{type: expense, amount: 45, description: Taxi...}]
+      "Taxi RM45" -> [{type: expense, amount: 45, description: Taxi...}]
       "Save for CyberDeck 1200" -> [{type: wishlist, amount: 1200, description: CyberDeck}]
       "KFC 200, Taxi 50" -> [{type: expense, amount: 200, description: KFC}, {type: expense, amount: 50, description: Taxi}]
       "Lunch 15 and Wishlist Bike 500" -> [{type: expense, amount: 15}, {type: wishlist, amount: 500}]
@@ -35,7 +35,7 @@ export const parseNaturalLanguageExpense = async (input: string, dateContext?: s
       
       RULES:
       - "Wishlist" keyword implies type='wishlist'.
-      - Default currency is user's local currency (assume dollar amount).
+      - Default currency is user's local currency (assume RM amount).
       - CATEGORIES: Food, Transport, Utilities, Shopping, Entertainment, Health, Tech, Other.
       - DURATION RULE: If the input implies a duration (e.g., "whole week", "past 3 days"), you MUST divide the total amount evenly by the number of days. Output a separate JSON object for EACH individual day, calculating the correct dates going backward from SYSTEM_DATE.
       

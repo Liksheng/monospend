@@ -13,7 +13,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="bg-black border border-y2k-green p-2 shadow-[4px_4px_0px_rgba(57,255,20,0.3)] z-50">
         <p className="text-y2k-green text-xs font-mono uppercase font-bold border-b border-y2k-green/30 mb-1 pb-1">{label}</p>
-        <p className="text-white text-sm font-mono">{`$${payload[0].value.toFixed(2)}`}</p>
+        <p className="text-white text-sm font-mono">{`RM${payload[0].value.toFixed(2)}`}</p>
       </div>
     );
   }

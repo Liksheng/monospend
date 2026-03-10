@@ -27,9 +27,9 @@ const TransactionList: React.FC<TransactionListProps> = ({
   if (expenses.length === 0) return <div className="text-center py-12 text-y2k-green font-mono text-lg animate-pulse font-bold tracking-widest border-y border-y2k-green/20">_NO_RECORDS_FOUND_</div>;
 
   return (
-    <div className="font-mono text-base overflow-x-auto pb-2">
+    <div className="font-mono text-base overflow-x-auto overflow-y-auto max-h-[450px] custom-scrollbar pb-2">
         <table className="w-full text-left border-collapse table-fixed">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-[#050505]">
                 <tr className="border-b-2 border-y2k-green text-y2k-green tracking-wider bg-y2k-green/10">
                     <th className="p-2 uppercase font-bold text-xs md:text-sm w-12 md:w-16">ID</th>
                     <th className="p-2 uppercase font-bold text-xs md:text-sm w-auto">Desc</th>
@@ -64,7 +64,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                             </td>
                             <td className="p-2 text-y2k-silver text-xs md:text-sm opacity-80 whitespace-nowrap">{expense.date}</td>
                             <td className="p-2 text-right text-y2k-cyan font-bold text-base md:text-lg whitespace-nowrap">
-                                ${expense.amount.toFixed(2)}
+                                RM{expense.amount.toFixed(2)}
                             </td>
                             <td className="p-2 text-right whitespace-nowrap">
                                 <div className="flex gap-1 justify-end opacity-0 group-hover:opacity-100 transition-opacity">

@@ -75,7 +75,7 @@ const CategoryBudgetList: React.FC<CategoryBudgetListProps> = ({ expenses, budge
                         <div className="flex justify-between items-end mb-1 text-sm font-bold">
                             <span className="uppercase text-white tracking-wider group-hover:text-y2k-pink transition-colors">{category}</span>
                             <span className={isClipping ? 'text-red-500 blink text-base' : 'text-y2k-green text-base'}>
-                                ${spent} <span className="text-y2k-silver text-xs">/ ${limit}</span>
+                                RM{spent} <span className="text-y2k-silver text-xs">/ ${limit}</span>
                             </span>
                         </div>
                         {renderBar(spent, limit)}

@@ -107,13 +107,13 @@ const MasterFader: React.FC<MasterFaderProps> = ({ income, totalSpent }) => {
             <div className="text-right w-full">
                 <div className="text-[8px] text-y2k-cyan uppercase mb-0.5 opacity-70">Income Lvl</div>
                 <div className="bg-zinc-900 border border-y2k-cyan/30 px-2 py-1 text-right w-full overflow-x-auto custom-scrollbar whitespace-nowrap">
-                     <span className="text-y2k-cyan font-bold font-mono text-sm">${income.toFixed(2)}</span>
+                     <span className="text-y2k-cyan font-bold font-mono text-sm">RM{income.toFixed(2)}</span>
                 </div>
             </div>
             <div className="text-right w-full">
                 <div className="text-[8px] text-y2k-green uppercase mb-0.5 opacity-70">Spend Lvl</div>
                 <div className="bg-zinc-900 border border-y2k-green/30 px-2 py-1 text-right w-full overflow-x-auto custom-scrollbar whitespace-nowrap">
-                     <span className="text-y2k-green font-bold font-mono text-sm">${totalSpent.toFixed(2)}</span>
+                     <span className="text-y2k-green font-bold font-mono text-sm">RM{totalSpent.toFixed(2)}</span>
                 </div>
             </div>
         </div>

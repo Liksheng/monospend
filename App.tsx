@@ -260,7 +260,7 @@ function App() {
                                  <div className="flex flex-col">
                                       <span className="text-[10px] text-y2k-cyan/70 uppercase font-bold mb-1 tracking-wider">SAFE_DAILY_BURN</span>
                                       <div className="text-4xl md:text-5xl font-black text-y2k-cyan text-glow font-mono leading-none tracking-tighter flex items-baseline">
-                                          ${Math.floor(dailyAllowance)}
+                                          RM{Math.floor(dailyAllowance)}
                                           <span className="text-xl opacity-60">.{dailyAllowance.toFixed(2).split('.')[1]}</span>
                                       </div>
                                  </div>
@@ -281,7 +281,7 @@ function App() {
                                  <div className="bg-black/40 border border-y2k-cyan/30 p-2 group hover:border-y2k-cyan hover:bg-y2k-cyan/5 transition-all">
                                       <label className="text-[9px] text-y2k-cyan/70 uppercase font-bold block mb-1 group-hover:text-y2k-cyan tracking-wider">TOTAL_INCOME</label>
                                       <div className="flex items-center gap-1">
-                                          <span className="text-y2k-cyan/50 text-sm font-mono">$</span>
+                                          <span className="text-y2k-cyan/50 text-sm font-mono">RM</span>
                                           <input 
                                               type="number"
                                               step="10" 
@@ -297,7 +297,7 @@ function App() {
                                  <div className="bg-black/40 border border-y2k-cyan/30 p-2 group hover:border-y2k-cyan hover:bg-y2k-cyan/5 transition-all">
                                       <label className="text-[9px] text-y2k-cyan/70 uppercase font-bold block mb-1 group-hover:text-y2k-cyan tracking-wider">SPEND_LIMIT</label>
                                       <div className="flex items-center gap-1">
-                                          <span className="text-y2k-cyan/50 text-sm font-mono">$</span>
+                                          <span className="text-y2k-cyan/50 text-sm font-mono">RM</span>
                                           <input 
                                               type="number" 
                                               step="10"
@@ -314,7 +314,7 @@ function App() {
                             <div className="bg-y2k-cyan/5 border border-y2k-cyan/20 p-2 flex justify-between items-center">
                                  <span className="text-[9px] text-y2k-cyan/70 uppercase font-bold tracking-wider">PROJECTED_RESERVE</span>
                                  <span className="text-y2k-cyan font-bold font-mono tracking-widest">
-                                    ${(currentReserves).toFixed(2)}
+                                    RM{(currentReserves).toFixed(2)}
                                  </span>
                             </div>
                        </div>

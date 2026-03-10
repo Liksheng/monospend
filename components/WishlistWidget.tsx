@@ -105,7 +105,7 @@ const WishlistWidget: React.FC<WishlistWidgetProps> = ({ savedAmount }) => {
                             <div key={item.id} className={`p-1 border ${isFunded ? 'border-y2k-pink bg-y2k-pink/10' : 'border-y2k-green bg-black'} relative group`}>
                                 <div className="flex justify-between items-baseline mb-1">
                                     <span className={`text-xs uppercase font-bold ${isFunded ? 'text-y2k-pink' : 'text-y2k-green'}`}>{item.name}</span>
-                                    <span className="text-xs font-mono text-white">${item.cost}</span>
+                                    <span className="text-xs font-mono text-white">RM{item.cost}</span>
                                 </div>
                                 
                                 {/* Progress Bar */}

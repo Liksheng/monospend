@@ -88,7 +88,7 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ subscriptions
                         <span className="text-[9px] text-zinc-500 uppercase">{sub.frequency}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-y2k-cyan font-mono">${sub.cost}</span>
+                        <span className="text-xs text-y2k-cyan font-mono">Rm{sub.cost}</span>
                         <button onClick={() => onDelete(sub.id)} className="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Trash2 className="w-3 h-3" />
                         </button>
@@ -99,7 +99,7 @@ const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({ subscriptions
 
         <div className="mt-2 pt-2 border-t border-y2k-green/30 text-right">
             <span className="text-[9px] text-zinc-400 uppercase mr-2">Projected Annual Drain:</span>
-            <span className="text-sm font-bold text-red-400 font-mono">${annualCost.toFixed(2)}</span>
+            <span className="text-sm font-bold text-red-400 font-mono">RM{annualCost.toFixed(2)}</span>
         </div>
     </div>
   );
