@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
+import { useLocalStorage } from './hooks/useLocalStorage';
 import SmartAdd from './components/SmartAdd';
 import { CategoryPieChart, DailyBarChart } from './components/Charts';
 import TransactionList from './components/TransactionList';
@@ -19,32 +19,9 @@ import { getSpendingInsights } from './services/geminiService';
 import { Settings, Minimize2, X, Maximize2, Calculator, Activity, Server, Filter, Terminal } from 'lucide-react';
 
 function App() {
-  const [expenses, setExpenses] = useState<Expense[]>(() => {
-    try {
-      const saved = localStorage.getItem('monospend_expenses');
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
-  });
-
-  const [budgets, setBudgets] = useState<BudgetState>(() => {
-    try {
-      const saved = localStorage.getItem('monospend_budgets');
-      const parsed = saved ? JSON.parse(saved) : {};
-      return {
-        income: parsed.income || 0,
-        total: parsed.total || 0,
-        categories: parsed.categories || {}
-      };
-    } catch { return { income: 0, total: 0, categories: {} }; }
-  });
-
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => {
-      try {
-          const saved = localStorage.getItem('monospend_subscriptions');
-          return saved ? JSON.parse(saved) : [];
-      } catch { return []; }
-  });
-
+  const [expenses, setExpenses] = useLocalStorage<Expense[]>('monospend_expenses', []);
+  const [budgets, setBudgets] = useLocalStorage<BudgetState>('monospend_budgets', { income: 0, total: 0, categories: {} });
+  const [subscriptions, setSubscriptions] = useLocalStorage<Subscription[]>('monospend_subscriptions', []);
   const [insight, setInsight] = useState("");
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [soloCategory, setSoloCategory] = useState<string | null>(null);
@@ -82,9 +59,6 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => { localStorage.setItem('monospend_expenses', JSON.stringify(expenses)); }, [expenses]);
-  useEffect(() => { localStorage.setItem('monospend_budgets', JSON.stringify(budgets)); }, [budgets]);
-  useEffect(() => { localStorage.setItem('monospend_subscriptions', JSON.stringify(subscriptions)); }, [subscriptions]);
 
   useEffect(() => {
     if (expenses.length > 0 && !insight) {
@@ -150,12 +124,12 @@ function App() {
               <div className="max-w-md w-full space-y-2">
                   <div className="text-xs animate-pulse"> BIOS DATE: 01/01/2000 00:00:01</div>
                   <div className="border-b border-y2k-green pb-2 mb-4">MONOSPEND_OS KERNEL LOADING...</div>
-                  <div className="space-y-1 text-xs opacity-80">
-  <div className="flex justify-between"><span>&gt; MOUNTING VOLUMES</span><span>[OK]</span></div>
-<div className="flex justify-between delay-100"><span>&gt; LOADING NEURAL ENGINE</span><span>[OK]</span></div>
-<div className="flex justify-between delay-200"><span>&gt; CHECKING HULL INTEGRITY</span><span>[OK]</span></div>
-<div className="flex justify-between delay-300"><span>&gt; ESTABLISHING SECURE LINK</span><span>[OK]</span></div>
-<div className="flex justify-between delay-500"><span>&gt; INITIALIZING UI_2000</span><span>[LOADING]</span></div>
+                   <div className="space-y-1 text-xs opacity-80">
+                      <div className="flex justify-between"><span>{'>'} MOUNTING VOLUMES</span><span>[OK]</span></div>
+                      <div className="flex justify-between delay-100"><span>{'>'} LOADING NEURAL ENGINE</span><span>[OK]</span></div>
+                      <div className="flex justify-between delay-200"><span>{'>'} CHECKING HULL INTEGRITY</span><span>[OK]</span></div>
+                      <div className="flex justify-between delay-300"><span>{'>'} ESTABLISHING SECURE LINK</span><span>[OK]</span></div>
+                      <div className="flex justify-between delay-500"><span>{'>'} INITIALIZING UI_2000</span><span>[LOADING]</span></div>
                   </div>
                   <div className="h-2 w-full bg-zinc-900 mt-4 border border-zinc-700">
                       <div className="h-full bg-y2k-green animate-[width_2s_ease-in-out_forwards]" style={{width: '100%'}}></div>

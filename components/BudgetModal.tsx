@@ -51,7 +51,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, currentBudge
         </div>
 
         <div className="flex items-center justify-between px-4 py-2 border-b border-white/50 bg-blue-800/50">
-          <h2 className="text-yellow-300 font-bold text-shadow-sm">&gt;&gt; SYSTEM_CONFIG_MENU</h2>
+          <h2 className="text-yellow-300 font-bold text-shadow-sm">{'>'}{'>'} SYSTEM_CONFIG_MENU</h2>
           <button onClick={onClose} className="text-white hover:text-red-500 transition-colors">
             <X className="w-6 h-6" />
           </button>
@@ -68,6 +68,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, currentBudge
                         <input 
                             type="number" 
                             step="10"
+                            min="0"
                             value={localBudget.income} 
                             onChange={(e) => setLocalBudget({...localBudget, income: parseInt(e.target.value) || 0})}
                             className="bg-blue-800 border border-white text-white p-2 w-32 text-center focus:bg-blue-700 focus:outline-none focus:border-yellow-300 transition-all shadow-inner"
@@ -78,6 +79,7 @@ const BudgetModal: React.FC<BudgetModalProps> = ({ isOpen, onClose, currentBudge
                          <input 
                             type="number" 
                             step="10"
+                            min="0"
                             value={localBudget.total} 
                             onChange={(e) => setLocalBudget({...localBudget, total: parseInt(e.target.value) || 0})}
                             className="bg-blue-800 border border-white text-white p-2 w-32 text-center focus:bg-blue-700 focus:outline-none focus:border-yellow-300 transition-all shadow-inner"

@@ -2,7 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { SmartParseResult, Category } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 export const parseNaturalLanguageExpense = async (input: string, dateContext?: string): Promise<SmartParseResult[] | null> => {
   try {
@@ -27,6 +27,7 @@ export const parseNaturalLanguageExpense = async (input: string, dateContext?: s
       "Save for CyberDeck 1200" -> [{type: wishlist, amount: 1200, description: CyberDeck}]
       "KFC 200, Taxi 50" -> [{type: expense, amount: 200, description: KFC}, {type: expense, amount: 50, description: Taxi}]
       "Lunch 15 and Wishlist Bike 500" -> [{type: expense, amount: 15}, {type: wishlist, amount: 500}]
+      "Ate KFC whole week for 70" -> Return 7 separate expense objects, each with amount: 10, description: "KFC", and consecutive dates ending on SYSTEM_DATE.
 
       EXTRACT: amount, description for EACH item. 
       IF EXPENSE: extract category, date.
@@ -36,6 +37,7 @@ export const parseNaturalLanguageExpense = async (input: string, dateContext?: s
       - "Wishlist" keyword implies type='wishlist'.
       - Default currency is user's local currency (assume dollar amount).
       - CATEGORIES: Food, Transport, Utilities, Shopping, Entertainment, Health, Tech, Other.
+      - DURATION RULE: If the input implies a duration (e.g., "whole week", "past 3 days"), you MUST divide the total amount evenly by the number of days. Output a separate JSON object for EACH individual day, calculating the correct dates going backward from SYSTEM_DATE.
       
       RETURN JSON ARRAY of objects.
     `;
@@ -66,9 +68,14 @@ export const parseNaturalLanguageExpense = async (input: string, dateContext?: s
 
     const result = JSON.parse(response.text) as SmartParseResult[];
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error parsing input with Gemini:", error);
-    return null;
+    if (error?.status === 429) {
+      throw new Error("API_RATE_LIMIT_EXCEEDED");
+    } else if (error?.status === 503 || error?.message?.includes("fetch") || error?.message?.includes("network")) {
+      throw new Error("NETWORK_DISCONNECTED");
+    }
+    throw error;
   }
 };
 
@@ -101,9 +108,14 @@ export const parseReceiptImage = async (base64Image: string): Promise<SmartParse
         if (!response.text) return null;
         return JSON.parse(response.text) as SmartParseResult;
 
-    } catch (error) {
+     } catch (error: any) {
         console.error("Optical Ingest Failed", error);
-        return null;
+        if (error?.status === 429) {
+          throw new Error("API_RATE_LIMIT_EXCEEDED");
+        } else if (error?.status === 503 || error?.message?.includes("fetch") || error?.message?.includes("network")) {
+          throw new Error("NETWORK_DISCONNECTED");
+        }
+        throw error;
     }
 }
 

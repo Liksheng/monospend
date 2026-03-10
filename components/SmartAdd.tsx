@@ -96,8 +96,14 @@ const SmartAdd: React.FC<SmartAddProps> = ({ onAddExpense, onAddWishlistItem, ex
         setStatusMsg(">> ERR: SYNTAX INVALID");
         playGlitchSound();
       }
-    } catch (error) {
-      setStatusMsg(">> SYSTEM FAILURE");
+    } catch (error: any) {
+      if (error.message === "API_RATE_LIMIT_EXCEEDED") {
+        setStatusMsg(">> ERR: QUOTA EXCEEDED. WAIT 60S.");
+      } else if (error.message === "NETWORK_DISCONNECTED") {
+        setStatusMsg(">> ERR: NO SIGNAL.");
+      } else {
+        setStatusMsg(">> SYSTEM FAILURE");
+      }
       playGlitchSound();
     } finally {
       setIsProcessing(false);
@@ -113,6 +119,8 @@ const SmartAdd: React.FC<SmartAddProps> = ({ onAddExpense, onAddWishlistItem, ex
           setInput('');
       } else {
           setStatusMsg(">> ANOMALY REJECTED");
+          setInput('');
+          setExcludeStats(false);
       }
       setPendingExpense(null);
       setAnomalyWarning(null);

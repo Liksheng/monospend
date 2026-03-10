@@ -140,8 +140,8 @@ const CalendarWidget: React.FC<CalendarWidgetProps> = ({ expenses, onSelectRange
 
         {/* Grid */}
         <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono flex-1 content-start" onMouseLeave={() => isDragging && setDragEnd(dragStart)}>
-            {['S','M','T','W','T','F','S'].map(d => (
-                <div key={d} className="text-y2k-silver opacity-50 font-bold">{d}</div>
+            {['S','M','T','W','T','F','S'].map((d, i) => (
+                <div key={`${d}-${i}`} className="text-y2k-silver opacity-50 font-bold">{d}</div>
             ))}
             
             {days.map((day, i) => {
