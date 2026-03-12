@@ -42,9 +42,12 @@ npm install
 3.Set up Environment Variables:
 Create a new file in the root directory named .env
 Open the .env.example file (if provided), or simply paste the following into your new .env file:
+
 **Code snippet
 VITE_GEMINI_API_KEY=your_actual_api_key_here
 
+
 4.Run the Development Server:
+
 **Bash
 npm run dev
