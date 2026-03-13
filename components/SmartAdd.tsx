@@ -34,7 +34,11 @@ const SmartAdd: React.FC<SmartAddProps> = ({ onAddExpense, onAddWishlistItem, ex
         results.forEach(result => {
             if (result.type === 'wishlist') {
                  const newItem: WishlistItem = {
-                     id: Date.now().toString() + Math.random(),
+                     id: typeof crypto !== 'undefined' && crypto.randomUUID
+                             ? crypto.randomUUID()
+                             : (typeof crypto !== 'undefined' && crypto.getRandomValues
+                                 ? crypto.getRandomValues(new Uint32Array(1))[0].toString(16) + Date.now().toString(16)
+                                 : Math.random().toString(36).substring(2) + Date.now().toString(36)),
                      name: result.description,
                      cost: result.amount
                  };
@@ -44,7 +48,9 @@ const SmartAdd: React.FC<SmartAddProps> = ({ onAddExpense, onAddWishlistItem, ex
                  const newExpense: Expense = {
                     id: typeof crypto !== 'undefined' && crypto.randomUUID 
                             ? crypto.randomUUID() 
-                            : Math.random().toString(36).substring(2) + Date.now().toString(36),
+                            : (typeof crypto !== 'undefined' && crypto.getRandomValues
+                                ? crypto.getRandomValues(new Uint32Array(1))[0].toString(16) + Date.now().toString(16)
+                                : Math.random().toString(36).substring(2) + Date.now().toString(36)),
                     amount: result.amount,
                     category: result.category || 'Other',
                     description: result.description,
