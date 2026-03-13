@@ -28,6 +28,8 @@ const DataControls: React.FC<DataControlsProps> = ({ expenses, budgets, onImport
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    // Free memory from blob URL to prevent resource exhaustion / DoS
+    URL.revokeObjectURL(url);
   };
 
   const handleExportCSV = () => {
@@ -51,6 +53,8 @@ const DataControls: React.FC<DataControlsProps> = ({ expenses, budgets, onImport
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      // Free memory from blob URL to prevent resource exhaustion / DoS
+      URL.revokeObjectURL(url);
   };
 
   const handleImportClick = () => {
