@@ -1,0 +1,4 @@
+## 2025-02-21 - CSV Injection Vulnerability in Export Feature
+**Vulnerability:** Missing input validation/sanitization in CSV Export function (`components/DataControls.tsx`). The application allowed arbitrary user input in the `description` field to be exported directly to a CSV file without escaping characters that trigger macro execution (`=`, `+`, `-`, `@`).
+**Learning:** Even if the application renders user input safely within the DOM (React handles XSS), exporting that same input into alternative formats (like CSV) can introduce entirely different classes of vulnerabilities (CSV/Macro Injection) because the execution context shifts to a spreadsheet application (e.g., Excel).
+**Prevention:** Always implement a sanitization step for exported data where fields might contain untrusted user input, prefixing potentially dangerous characters with a harmless string (like a single quote `'`).

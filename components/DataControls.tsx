@@ -32,13 +32,22 @@ const DataControls: React.FC<DataControlsProps> = ({ expenses, budgets, onImport
 
   const handleExportCSV = () => {
       const headers = ['ID', 'Date', 'Category', 'Description', 'Amount'];
+
+      // Prevent CSV Injection (Macro Injection)
+      const sanitizeCSV = (val: string) => {
+          if (/^[=+\-@\t\r\n]/.test(val)) {
+              return `'${val}`;
+          }
+          return val;
+      };
+
       const csvContent = [
           headers.join(','),
           ...expenses.map(e => [
               e.id,
               e.date,
               e.category,
-              `"${e.description.replace(/"/g, '""')}"`,
+              `"${sanitizeCSV(e.description).replace(/"/g, '""')}"`,
               e.amount.toFixed(2)
           ].join(','))
       ].join('\n');
