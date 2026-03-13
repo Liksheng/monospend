@@ -66,12 +66,14 @@ function App() {
     }
   }, [expenses.length, insight, budgets.total, budgets.income]);
 
+  const statsExpenses = useMemo(() => expenses.filter(e => !e.excludeFromStats), [expenses]);
+
   const currentMonthTotal = useMemo(() => {
     const now = new Date();
-    return expenses
+    return statsExpenses
       .filter(e => new Date(e.date).getMonth() === now.getMonth())
       .reduce((acc, curr) => acc + curr.amount, 0);
-  }, [expenses]);
+  }, [statsExpenses]);
   
   // Calculate reserves (Income - Spending - Subscriptions share)
   const currentReserves = useMemo(() => {
@@ -397,7 +399,7 @@ function App() {
                       {/* Limiters */}
                       <div className="y2k-panel p-3 h-80 overflow-hidden flex flex-col relative group">
                           <CategoryBudgetList 
-                              expenses={expenses} 
+                              expenses={statsExpenses}
                               budgets={budgets} 
                               onOpenSettings={() => setIsBudgetModalOpen(true)}
                           />
@@ -419,12 +421,12 @@ function App() {
 
                        {/* Predictive Modelling & Frequency (Stacked) */}
                        <div className="h-80 flex flex-col gap-6">
-                            <PredictiveModelling expenses={expenses} currentReserves={currentReserves} />
+                            <PredictiveModelling expenses={statsExpenses} currentReserves={currentReserves} />
                             <div className="y2k-panel p-3 flex-1 relative min-h-0 flex flex-col">
                                 <div className="bg-y2k-green text-black text-xs px-2 mb-2 font-bold inline-block uppercase border border-y2k-green w-fit shrink-0">Freq_Analysis</div>
                                 <div className="flex-1 min-h-0 relative">
                                     <div className="absolute inset-0">
-                                        <CategoryPieChart expenses={expenses} />
+                                        <CategoryPieChart expenses={statsExpenses} />
                                     </div>
                                 </div>
                             </div>
@@ -435,7 +437,7 @@ function App() {
                   <div className="y2k-panel p-3 flex flex-col relative overflow-hidden min-h-[200px]">
                       <div className="bg-y2k-green text-black text-xs px-2 mb-2 font-bold inline-block uppercase border border-y2k-green w-fit">Daily_Waveform</div>
                       <div className="flex-1 min-h-0"> {/* min-h-0 crucial for flex child overflow */}
-                          <DailyBarChart expenses={expenses} />
+                          <DailyBarChart expenses={statsExpenses} />
                       </div>
                   </div>
               </div>
