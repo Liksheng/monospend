@@ -1,79 +1,29 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
-import { SmartParseResult, Category } from "../types";
-
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+import { SmartParseResult } from "../types";
 
 export const parseNaturalLanguageExpense = async (input: string, dateContext?: string): Promise<SmartParseResult[] | null> => {
   try {
-    const modelId = "gemini-2.5-flash";
-    const today = new Date().toISOString().split('T')[0];
-    
-    const dateInstruction = dateContext 
-      ? `USER_OVERRIDE_DATE: ${dateContext}.`
-      : `SYSTEM_DATE: ${today}.`;
-
-    const prompt = `
-      SYSTEM_INPUT_ANALYSIS: "${input}".
-      ${dateInstruction}
-      
-      TASK: Analyze input and extract one or more items. 
-      The input might contain multiple distinct expenses or wishlist items separated by commas, 'and', or spaces.
-      
-      CLASSIFY EACH ITEM: EXPENSE or WISHLIST.
-      
-      EXAMPLES:
-      "Taxi RM45" -> [{type: expense, amount: 45, description: Taxi...}]
-      "Save for CyberDeck 1200" -> [{type: wishlist, amount: 1200, description: CyberDeck}]
-      "KFC 200, Taxi 50" -> [{type: expense, amount: 200, description: KFC}, {type: expense, amount: 50, description: Taxi}]
-      "Lunch 15 and Wishlist Bike 500" -> [{type: expense, amount: 15}, {type: wishlist, amount: 500}]
-      "Ate KFC whole week for 70" -> Return 7 separate expense objects, each with amount: 10, description: "KFC", and consecutive dates ending on SYSTEM_DATE.
-
-      EXTRACT: amount, description for EACH item. 
-      IF EXPENSE: extract category, date.
-      IF WISHLIST: set type='wishlist'.
-      
-      RULES:
-      - "Wishlist" keyword implies type='wishlist'.
-      - Default currency is user's local currency (assume RM amount).
-      - CATEGORIES: Food, Transport, Utilities, Shopping, Entertainment, Health, Tech, Other.
-      - DURATION RULE: If the input implies a duration (e.g., "whole week", "past 3 days"), you MUST divide the total amount evenly by the number of days. Output a separate JSON object for EACH individual day, calculating the correct dates going backward from SYSTEM_DATE.
-      
-      RETURN JSON ARRAY of objects.
-    `;
-
-    const response = await ai.models.generateContent({
-      model: modelId,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-                type: { type: Type.STRING, enum: ["expense", "wishlist"] },
-                amount: { type: Type.NUMBER },
-                category: { type: Type.STRING, enum: Object.values(Category), nullable: true },
-                description: { type: Type.STRING },
-                date: { type: Type.STRING, description: "ISO 8601 date string YYYY-MM-DD", nullable: true },
-            },
-            required: ["type", "amount", "description"],
-          }
-        },
+    const response = await fetch('/api/gemini/parse', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ input, dateContext }),
     });
 
-    if (!response.text) return null;
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || "SYSTEM FAILURE");
+    }
 
-    const result = JSON.parse(response.text) as SmartParseResult[];
-    return result;
+    return await response.json();
   } catch (error: any) {
-    console.error("Error parsing input with Gemini:", error);
-    if (error?.status === 429) {
-      throw new Error("API_RATE_LIMIT_EXCEEDED");
-    } else if (error?.status === 503 || error?.message?.includes("fetch") || error?.message?.includes("network")) {
-      throw new Error("NETWORK_DISCONNECTED");
+    console.error("Error parsing input:", error);
+    if (error?.message === "API_RATE_LIMIT_EXCEEDED" || error?.message === "NETWORK_DISCONNECTED") {
+        throw error;
+    }
+    // Simulate network disconnect if fetch completely fails
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+         throw new Error("NETWORK_DISCONNECTED");
     }
     throw error;
   }
@@ -81,39 +31,28 @@ export const parseNaturalLanguageExpense = async (input: string, dateContext?: s
 
 export const parseReceiptImage = async (base64Image: string): Promise<SmartParseResult | null> => {
     try {
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: {
-                parts: [
-                    { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
-                    { text: "Analyze this receipt. Extract the total amount, a brief description (e.g., Store Name), and categorize it (Food, Tech, Transport, etc). Return JSON." }
-                ]
+        const response = await fetch('/api/gemini/parse-receipt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-            config: {
-                responseMimeType: "application/json",
-                responseSchema: {
-                    type: Type.OBJECT,
-                    properties: {
-                        type: { type: Type.STRING, enum: ["expense"] },
-                        amount: { type: Type.NUMBER },
-                        category: { type: Type.STRING, enum: Object.values(Category) },
-                        description: { type: Type.STRING },
-                        date: { type: Type.STRING, description: "ISO 8601 date" }
-                    },
-                    required: ["amount", "description", "category"]
-                }
-            }
+            body: JSON.stringify({ base64Image }),
         });
 
-        if (!response.text) return null;
-        return JSON.parse(response.text) as SmartParseResult;
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "SYSTEM FAILURE");
+        }
 
+        return await response.json();
      } catch (error: any) {
-        console.error("Optical Ingest Failed", error);
-        if (error?.status === 429) {
-          throw new Error("API_RATE_LIMIT_EXCEEDED");
-        } else if (error?.status === 503 || error?.message?.includes("fetch") || error?.message?.includes("network")) {
-          throw new Error("NETWORK_DISCONNECTED");
+        console.error("Optical Ingest Failed:", error);
+        if (error?.message === "API_RATE_LIMIT_EXCEEDED" || error?.message === "NETWORK_DISCONNECTED") {
+            throw error;
+        }
+        // Simulate network disconnect if fetch completely fails
+        if (error instanceof TypeError && error.message.includes('fetch')) {
+             throw new Error("NETWORK_DISCONNECTED");
         }
         throw error;
     }
@@ -121,38 +60,20 @@ export const parseReceiptImage = async (base64Image: string): Promise<SmartParse
 
 export const getSpendingInsights = async (expenses: any[], totalBudget: number, totalIncome: number): Promise<string> => {
   try {
-    const activeExpenses = expenses.filter(e => !e.excludeFromStats);
-
-    if (activeExpenses.length === 0) return "SYSTEM ONLINE. AWAITING DATA STREAM.";
-
-    const summary = activeExpenses.slice(0, 20).map(e => `${e.date}: ${e.description} ($${e.amount})`).join("\n");
-
-    // The "Overseer" Personality
-    const prompt = `
-      IDENTITY: You are "Overseer_AI", a ruthless, efficient cyberpunk system administrator.
-      
-      DATA:
-      Total Budget: ${totalBudget}
-      Total Income: ${totalIncome}
-      Recent Logs:
-      ${summary}
-      
-      TASK: Judge the user's spending.
-      
-      TONE: Cold, robotic, judgmental, minimalist.
-      - Good spending? "EFFICIENCY WITHIN ACCEPTABLE PARAMETERS."
-      - Bad spending? "WASTEFUL RESOURCE ALLOCATION DETECTED. DISAPPOINTMENT IMMEASURABLE."
-      - Dangerous levels? "HULL INTEGRITY CRITICAL. ABANDON SHIP OR CEASE SPENDING."
-      
-      CONSTRAINT: Under 15 words. No preamble.
-    `;
-
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+    const response = await fetch('/api/gemini/insights', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ expenses, totalBudget, totalIncome }),
     });
 
-    return response.text || "CALCULATING EFFICIENCY...";
+    if (!response.ok) {
+        throw new Error("Failed to get insights");
+    }
+
+    const data = await response.json();
+    return data.insight;
   } catch (error) {
     console.error("Error getting insights:", error);
     return "ERR: OVERSEER MODULE OFFLINE.";
