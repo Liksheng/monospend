@@ -418,11 +418,15 @@ function App() {
                       </div>
 
                        {/* Predictive Modelling & Frequency (Stacked) */}
-                       <div className="h-64 flex flex-col gap-6">
+                       <div className="h-80 flex flex-col gap-6">
                             <PredictiveModelling expenses={expenses} currentReserves={currentReserves} />
-                            <div className="y2k-panel p-3 flex-1 relative min-h-0">
-                                <div className="bg-y2k-green text-black text-xs px-2 mb-2 font-bold inline-block uppercase border border-y2k-green w-fit">Freq_Analysis</div>
-                                <CategoryPieChart expenses={expenses} />
+                            <div className="y2k-panel p-3 flex-1 relative min-h-0 flex flex-col">
+                                <div className="bg-y2k-green text-black text-xs px-2 mb-2 font-bold inline-block uppercase border border-y2k-green w-fit shrink-0">Freq_Analysis</div>
+                                <div className="flex-1 min-h-0 relative">
+                                    <div className="absolute inset-0">
+                                        <CategoryPieChart expenses={expenses} />
+                                    </div>
+                                </div>
                             </div>
                        </div>
                   </div>
