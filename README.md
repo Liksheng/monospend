@@ -47,22 +47,24 @@ cd monospend
 
 ### Step 3: Install Required Files
 In your terminal, type the following command and press Enter:
-   **Bash**   
+```bash  
    npm install
+```
 ### (This will take a minute or two. It downloads all the necessary background files the app needs to run).
 
 ### Step 4: Add your AI Key
 The app needs your Google Gemini key to understand natural language.
 Inside the monospend folder, create a brand new file and name it exactly: .env (Make sure Windows doesn't accidentally save it as .env.txt!).
 Open that .env file in Notepad or VS Code and paste this single line, replacing the placeholder with your actual key:
-**Code snippet**
+```bash
 VITE_GEMINI_API_KEY=your_actual_api_key_here
+```
 ### Save the file. (Note: The Express backend securely reads this key from the server environment so it is never exposed to the browser's source code).
 
 ### Step 5: Start the App!
-**Bash**
+```Bash
 npm run dev
-
+```
 ### (This command uses concurrently to automatically start both the Vite frontend on port 3000 and the secure Express backend proxy on port 3001).
 
 ### Finally, open your web browser (like Chrome or Edge) and go to:
