@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, BarChart, Bar } from 'recharts';
+import React, { useMemo } from 'react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { Expense, CATEGORY_COLORS } from '../types';
 
 interface ChartProps {
@@ -21,23 +21,33 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export const CategoryPieChart: React.FC<ChartProps> = ({ expenses }) => {
-  const dataMap = expenses.reduce((acc, curr) => {
-    acc[curr.category] = (acc[curr.category] || 0) + curr.amount;
-    return acc;
-  }, {} as Record<string, number>);
+  const { data, safeTotal } = useMemo(() => {
+      const dataMap: Record<string, number> = {};
+      let total = 0;
+      for (let i = 0; i < expenses.length; i++) {
+          const curr = expenses[i];
+          if (curr.excludeFromStats) continue;
+          dataMap[curr.category] = (dataMap[curr.category] || 0) + curr.amount;
+          total += curr.amount;
+      }
 
-  const total = (Object.values(dataMap) as number[]).reduce((a: number, b: number) => a + b, 0);
-  const safeTotal: number = total || 1;
+      const sTotal = total || 1;
+      const entries = Object.entries(dataMap);
+      const result = [];
+      for (let i = 0; i < entries.length; i++) {
+          const [name, value] = entries[i];
+          result.push({
+              name,
+              value,
+              percent: value / sTotal
+          });
+      }
+      result.sort((a, b) => b.value - a.value);
 
-  const data = Object.entries(dataMap).map(([name, value]) => ({ 
-      name, 
-      value: value as number,
-      percent: (value as number) / safeTotal
-  }));
-  
-  data.sort((a, b) => b.value - a.value);
+      return { data: result, safeTotal: sTotal };
+  }, [expenses]);
 
-  const activeExpenses = expenses.length > 0;
+  const activeExpenses = data.length > 0;
   const totalTicks = 40;
   const radius = 50; // Reduced radius to fit
   const center = 80;
@@ -119,16 +129,25 @@ export const CategoryPieChart: React.FC<ChartProps> = ({ expenses }) => {
 };
 
 export const DailyBarChart: React.FC<ChartProps> = ({ expenses }) => {
-    const dataMap = expenses.reduce((acc, curr) => {
-        const dateKey = curr.date.slice(5); // MM-DD
-        acc[dateKey] = (acc[dateKey] || 0) + curr.amount;
-        return acc;
-      }, {} as Record<string, number>);
-    
-      const sortedKeys = Object.keys(dataMap).sort();
-      const data = sortedKeys.map(key => ({ name: key, amount: dataMap[key] }));
+    const data = useMemo(() => {
+        const dataMap: Record<string, number> = {};
+        for (let i = 0; i < expenses.length; i++) {
+            const curr = expenses[i];
+            if (curr.excludeFromStats) continue;
+            const dateKey = curr.date.slice(5); // MM-DD
+            dataMap[dateKey] = (dataMap[dateKey] || 0) + curr.amount;
+        }
 
-      if (data.length === 0) {
+        const sortedKeys = Object.keys(dataMap).sort();
+        const result = [];
+        for (let i = 0; i < sortedKeys.length; i++) {
+            const key = sortedKeys[i];
+            result.push({ name: key, amount: dataMap[key] });
+        }
+        return result;
+    }, [expenses]);
+
+    if (data.length === 0) {
         return (
           <div className="h-full flex flex-col items-center justify-center border border-dashed border-y2k-green/30 bg-black/40 relative min-h-[150px]">
              <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(57,255,20,0.03)_25%,transparent_25%,transparent_50%,rgba(57,255,20,0.03)_50%,rgba(57,255,20,0.03)_75%,transparent_75%,transparent)] bg-[size:20px_20px]"></div>
